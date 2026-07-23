@@ -3,151 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>純 JS 會員系統範例</title>
+    <title>金門縣旅遊導覽 - 首頁</title>
     <style>
-        body { font-family: system-ui, sans-serif; padding: 20px; max-width: 400px; margin: 0 auto; }
-        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        input { display: block; width: 90%; margin: 10px 0; padding: 8px; }
-        button { padding: 8px 16px; cursor: pointer; margin-right: 5px; }
-        .error { color: red; font-size: 0.9em; }
-        .hidden { display: none; }
+        /* 基礎全域樣式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            line-height: 1.8;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* 頂部導覽列 */
+        header {
+            background-color: #1a365d;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        nav {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f6ad55;
+            text-decoration: none;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.2rem;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: #f6ad55;
+        }
+
+        /* 主體內容容器 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        .page-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #1a365d;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #f6ad55;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+        .title-wrapper {
+            text-align: center;
+        }
+
+        /* 文章介紹區塊 */
+        .section-block {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c5282;
+            margin-bottom: 1rem;
+            border-left: 5px solid #f6ad55;
+            padding-left: 10px;
+        }
+        .section-content {
+            font-size: 1.05rem;
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        /* 預留插圖區塊 */
+        .image-wrapper {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .image-wrapper img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        .image-wrapper img:hover {
+            transform: scale(1.02);
+        }
+        .image-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 0.5rem;
+        }
+
+        /* 頁尾 Footer */
+        footer {
+            background-color: #2d3748;
+            color: #a0aec0;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            font-size: 0.9rem;
+        }
+
+        /* 手機版 RWD 選擇性響應式 */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .image-wrapper img {
+                height: 250px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h2>localStorage 純 JS 會員系統</h2>
+    <!-- 導覽列 -->
+    <header>
+        <nav>
+            <a href="index.html" class="logo">金門旅遊網</a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">首頁</a></li>
+                <li><a href="jincheng.html">金城鎮</a></li>
+                <li><a href="jinning.html">金寧鄉</a></li>
+                <li><a href="jinhu.html">金湖鎮</a></li>
+                <li><a href="jinsha.html">金沙鎮</a></li>
+                <li><a href="lieyu.html">烈嶼鄉</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <!-- 區塊 1：登入與註冊表單 -->
-    <div id="auth-section" class="card">
-        <h3 id="form-title">會員登入</h3>
-        <input type="text" id="username" placeholder="請輸入帳號">
-        <input type="password" id="password" placeholder="請輸入密碼">
-        <p id="message" class="error"></p>
-        
-        <div id="login-buttons">
-            <button onclick="login()">登入</button>
-            <button onclick="toggleMode(true)">還沒有帳號？去註冊</button>
+    <!-- 主內容區 -->
+    <main>
+        <div class="title-wrapper">
+            <h1 class="page-title">歡迎來到戰地風情與閩南文化之島 — 金門縣</h1>
         </div>
-        
-        <div id="register-buttons" class="hidden">
-            <button onclick="register()">完成註冊</button>
-            <button onclick="toggleMode(false)">已有帳號？去登入</button>
-        </div>
-    </div>
 
-    <!-- 區塊 2：會員專區（登入後才看得到） -->
-    <div id="member-section" class="card hidden">
-        <h3>🎉 歡迎回來，<span id="user-display"></span>！</h3>
-        <p>這是只有登入使用者才能看到的專屬內容。</p>
-        <button onclick="logout()">登出帳號</button>
-    </div>
+        <!-- 第一段介紹區塊 + 第一張插圖 -->
+        <article class="section-block">
+            <h2 class="section-title">第一區塊：歷史記憶與閩南文化風華</h2>
+            <p class="section-content">
+                金門縣位於台灣海峽西側，擁有豐富而獨特的歷史底蘊。這裡不僅保留了極為完整的閩南傳統聚落與古厝聚落，例如燕尾脊與馬背建築，更因歷史演變留下了濃厚的戰地遺跡與人文采風。漫步於金門的古老巷弄間，彷彿能穿越時空，感受數百年來先民墾荒與僑鄉文化的交織。
+            </p>
 
-    <script>
-        // --------------------------------------------------
-        // 核心邏輯 1：狀態切換與初始化
-        // --------------------------------------------------
-        let isRegisterMode = false;
+            <!-- 預留插圖連結 1 -->
+            <div class="image-wrapper">
+                <!-- 請將下方 src 的網址替換為你自己的圖片連結 -->
+                <img src="https://via.placeholder.com/1000x400/1a365d/ffffff?text=%E9%87%91%E9%96%80%E9%A6%96%E9%A0%81%E7%AC%AC%E4%B8%80%E5%BC%B5%E6%8F%92%E5%9C%96%E9%A0%90%E7%95%99%E4%BD%8D" alt="金門首頁照片1">
+            </div>
+            <p class="image-caption">【插圖一預留位】金門傳統閩南古厝建築與燕尾脊風貌</p>
+        </article>
 
-        // 頁面載入時，檢查是否「已經登入過」
-        window.onload = function() {
-            checkLoginStatus();
-        };
+        <!-- 第二段介紹區塊 + 第二張插圖 -->
+        <article class="section-block">
+            <h2 class="section-title">第二區塊：自然生態與在地特產美食</h2>
+            <p class="section-content">
+                除了深厚的文化背景，金門的自然生態資源亦相當豐富。每逢秋冬之際，成千上萬的候鳥如鸕鶿抵達金門越冬，成為賞鳥人士的天然天堂。此外，享譽中外的金門高粱酒、傳統手工貢糖、牛肉麵以及著名的金門鋼刀，都是造訪金門不可錯過的在地特色體驗。
+            </p>
 
-        function checkLoginStatus() {
-            const currentUser = localStorage.getItem('currentUser');
-            if (currentUser) {
-                // 已登入：顯示會員區，隱藏表單區
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('member-section').classList.remove('hidden');
-                document.getElementById('user-display').innerText = currentUser;
-            } else {
-                // 未登入：顯示表單區，隱藏會員區
-                document.getElementById('auth-section').classList.remove('hidden');
-                document.getElementById('member-section').classList.add('hidden');
-            }
-        }
+            <!-- 預留插圖連結 2 -->
+            <div class="image-wrapper">
+                <!-- 請將下方 src 的網址替換為你自己的圖片連結 -->
+                <img src="https://via.placeholder.com/1000x400/2c5282/ffffff?text=%E9%87%91%E9%96%80%E9%A6%96%E9%A0%81%E7%AC%AC%E4%BA%8C%E5%BC%B5%E6%8F%92%E5%9C%96%E9%A0%90%E7%95%99%E4%BD%8D" alt="金門首頁照片2">
+            </div>
+            <p class="image-caption">【插圖二預留位】金門海岸生態與自然風光</p>
+        </article>
+    </main>
 
-        // 切換「登入模式」與「註冊模式」
-        function toggleMode(isRegister) {
-            isRegisterMode = isRegister;
-            document.getElementById('message').innerText = '';
-            document.getElementById('form-title').innerText = isRegister ? '註冊新帳號' : '會員登入';
-            
-            if (isRegister) {
-                document.getElementById('login-buttons').classList.add('hidden');
-                document.getElementById('register-buttons').classList.remove('hidden');
-            } else {
-                document.getElementById('login-buttons').classList.remove('hidden');
-                document.getElementById('register-buttons').classList.add('hidden');
-            }
-        }
-
-        // --------------------------------------------------
-        // 核心邏輯 2：讀寫 localStorage 進行驗證
-        // --------------------------------------------------
-
-        // 取得目前已註冊的所有使用者清單（格式為物件：{ 帳號: 密碼 }）
-        function getUsers() {
-            const users = localStorage.getItem('users');
-            return users ? JSON.parse(users) : {};
-        }
-
-        // 註冊功能
-        function register() {
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
-            const msg = document.getElementById('message');
-
-            if (!user || !pass) {
-                msg.innerText = '請填寫帳號與密碼！';
-                return;
-            }
-
-            const users = getUsers();
-
-            if (users[user]) {
-                msg.innerText = '該帳號已被註冊！';
-                return;
-            }
-
-            // 存入 localStorage
-            users[user] = pass;
-            localStorage.setItem('users', JSON.stringify(users));
-
-            alert('註冊成功！請直接登入。');
-            toggleMode(false); // 自動切換回登入模式
-        }
-
-        // 登入功能
-        function login() {
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
-            const msg = document.getElementById('message');
-
-            const users = getUsers();
-
-            // 檢查帳號是否存在且密碼匹配
-            if (users[user] && users[user] === pass) {
-                // 記錄「當前登入者」
-                localStorage.setItem('currentUser', user);
-                checkLoginStatus(); // 更新畫面
-                
-                // 清空輸入框
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-                msg.innerText = '';
-            } else {
-                msg.innerText = '帳號或密碼錯誤！';
-            }
-        }
-
-        // 登出功能
-        function logout() {
-            // 清除當前登入狀態
-            localStorage.removeItem('currentUser');
-            checkLoginStatus(); // 更新畫面
-        }
-    </script>
+    <!-- 頁尾 -->
+    <footer>
+        <p>&copy; 2026 金門縣導覽網 Kinmen Travel Guide. All Rights Reserved.</p>
+    </footer>
 
 </body>
 </html>
