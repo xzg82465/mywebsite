@@ -3,45 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的個人作品集</title>
+    <title>純 JS 會員系統範例</title>
     <style>
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #f4f6f8;
-            color: #333;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        h1 { color: #0969da; }
-        .tag {
-            display: inline-block;
-            background: #ddf4ff;
-            color: #0969da;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            margin-right: 8px;
-        }
+        body { font-family: system-ui, sans-serif; padding: 20px; max-width: 400px; margin: 0 auto; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        input { display: block; width: 90%; margin: 10px 0; padding: 8px; }
+        button { padding: 8px 16px; cursor: pointer; margin-right: 5px; }
+        .error { color: red; font-size: 0.9em; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>👋 你好，我是網站開發者</h1>
-        <p>這是我透過 <strong>GitHub Pages</strong> 免費託管的第一個靜態網頁！</p>
+
+    <h2>localStorage 純 JS 會員系統</h2>
+
+    <!-- 區塊 1：登入與註冊表單 -->
+    <div id="auth-section" class="card">
+        <h3 id="form-title">會員登入</h3>
+        <input type="text" id="username" placeholder="請輸入帳號">
+        <input type="password" id="password" placeholder="請輸入密碼">
+        <p id="message" class="error"></p>
         
-        <h2>技能標籤</h2>
-        <div>
-            <span class="tag">HTML / CSS</span>
-            <span class="tag">JavaScript</span>
-            <span class="tag">Git & GitHub</span>
+        <div id="login-buttons">
+            <button onclick="login()">登入</button>
+            <button onclick="toggleMode(true)">還沒有帳號？去註冊</button>
+        </div>
+        
+        <div id="register-buttons" class="hidden">
+            <button onclick="register()">完成註冊</button>
+            <button onclick="toggleMode(false)">已有帳號？去登入</button>
         </div>
     </div>
+
+    <!-- 區塊 2：會員專區（登入後才看得到） -->
+    <div id="member-section" class="card hidden">
+        <h3>🎉 歡迎回來，<span id="user-display"></span>！</h3>
+        <p>這是只有登入使用者才能看到的專屬內容。</p>
+        <button onclick="logout()">登出帳號</button>
+    </div>
+
+    <script>
+        // --------------------------------------------------
+        // 核心邏輯 1：狀態切換與初始化
+        // --------------------------------------------------
+        let isRegisterMode = false;
+
+        // 頁面載入時，檢查是否「已經登入過」
+        window.onload = function() {
+            checkLoginStatus();
+        };
+
+        function checkLoginStatus() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                // 已登入：顯示會員區，隱藏表單區
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('member-section').classList.remove('hidden');
+                document.getElementById('user-display').innerText = currentUser;
+            } else {
+                // 未登入：顯示表單區，隱藏會員區
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('member-section').classList.add('hidden');
+            }
+        }
+
+        // 切換「登入模式」與「註冊模式」
+        function toggleMode(isRegister) {
+            isRegisterMode = isRegister;
+            document.getElementById('message').innerText = '';
+            document.getElementById('form-title').innerText = isRegister ? '註冊新帳號' : '會員登入';
+            
+            if (isRegister) {
+                document.getElementById('login-buttons').classList.add('hidden');
+                document.getElementById('register-buttons').classList.remove('hidden');
+            } else {
+                document.getElementById('login-buttons').classList.remove('hidden');
+                document.getElementById('register-buttons').classList.add('hidden');
+            }
+        }
+
+        // --------------------------------------------------
+        // 核心邏輯 2：讀寫 localStorage 進行驗證
+        // --------------------------------------------------
+
+        // 取得目前已註冊的所有使用者清單（格式為物件：{ 帳號: 密碼 }）
+        function getUsers() {
+            const users = localStorage.getItem('users');
+            return users ? JSON.parse(users) : {};
+        }
+
+        // 註冊功能
+        function register() {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const msg = document.getElementById('message');
+
+            if (!user || !pass) {
+                msg.innerText = '請填寫帳號與密碼！';
+                return;
+            }
+
+            const users = getUsers();
+
+            if (users[user]) {
+                msg.innerText = '該帳號已被註冊！';
+                return;
+            }
+
+            // 存入 localStorage
+            users[user] = pass;
+            localStorage.setItem('users', JSON.stringify(users));
+
+            alert('註冊成功！請直接登入。');
+            toggleMode(false); // 自動切換回登入模式
+        }
+
+        // 登入功能
+        function login() {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const msg = document.getElementById('message');
+
+            const users = getUsers();
+
+            // 檢查帳號是否存在且密碼匹配
+            if (users[user] && users[user] === pass) {
+                // 記錄「當前登入者」
+                localStorage.setItem('currentUser', user);
+                checkLoginStatus(); // 更新畫面
+                
+                // 清空輸入框
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                msg.innerText = '';
+            } else {
+                msg.innerText = '帳號或密碼錯誤！';
+            }
+        }
+
+        // 登出功能
+        function logout() {
+            // 清除當前登入狀態
+            localStorage.removeItem('currentUser');
+            checkLoginStatus(); // 更新畫面
+        }
+    </script>
+
 </body>
 </html>
