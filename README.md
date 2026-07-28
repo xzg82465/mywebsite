@@ -1,3 +1,3 @@
 # mywebsite
 mywebsite with html
-https://xzg82465.github.io
+https://xzg82465.github.io/index.html
